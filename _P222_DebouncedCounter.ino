@@ -117,6 +117,8 @@ boolean Plugin_222(byte function, struct EventStruct *event, String& string)
 
     case PLUGIN_WEBFORM_LOAD:
       {
+	// This is the period of time, starting from the first signal edge,
+	// within the next pulses are ignored.
         String debounceTime[6];
         debounceTime[0] = F("80ms");
         debounceTime[1] = F("160ms");
@@ -125,6 +127,8 @@ boolean Plugin_222(byte function, struct EventStruct *event, String& string)
         debounceTime[4] = F("400ms");
         debounceTime[5] = F("800ms");
 
+	// Internal prescaler for debouncing logic, to be able to do larger debounce times
+	// Logic is: Debounce time = 20ms * 4  * debouncePrescale
         int debouncePrescale[] = { 1, 2, 3, 4, 5, 10 };
         addFormSelector(F("Debounce Time"), F("p222"), 6, debounceTime, debouncePrescale, PCONFIG(0) );
 
@@ -189,7 +193,7 @@ boolean Plugin_222(byte function, struct EventStruct *event, String& string)
         log +=  PCONFIG(2);
         log += " with debouce ";
         log += PCONFIG(0);
-        //log += "*80ms";
+        
         addLog(LOG_LEVEL_INFO,log);
         pinMode(CONFIG_PIN1, INPUT_PULLUP);
         Plugin_222_ct0[event->TaskIndex]=0; // reset debounce counter
